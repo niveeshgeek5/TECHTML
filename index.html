@@ -413,10 +413,10 @@ footer span{color:var(--cyan)}
 
 <footer>
   TECHNOVANZA 2026 &nbsp;·&nbsp; Anjalai Ammal Mahalingam Engineering College
-  &nbsp;·&nbsp; <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="62111b0f120d110b170f2203030f07014c0706174c0b0c">[email&#160;protected]</a></span>
+  &nbsp;·&nbsp; <span>symposium@aamec.edu.in</span>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 /* ═══════════════════════════════════════════
    CONFIG
 ═══════════════════════════════════════════ */
@@ -664,6 +664,7 @@ function updateStepper(n){
    ✅ FIX 1: Register number must be exactly 12 digits, only numbers
 ═══════════════════════════════════════════ */
 function goToStep2(){
+  console.log('goToStep2 called');
   const reg  = v('f-reg');
   const name = v('f-name');
   const dept = v('f-dept');
@@ -678,8 +679,8 @@ function goToStep2(){
   if(!/^\d{12}$/.test(reg)){
     err('step1-alert','⚠️ Register Number must be exactly <strong>12 digits</strong> — numbers only, no letters or special characters.'); return;
   }
-  if(!/^\d{10}$/.test(phone)){
-    err('step1-alert','⚠️ Phone number must be exactly 10 digits.'); return;
+  if(phone.length !== 10 || !/^\d+$/.test(phone)){
+    err('step1-alert','⚠️ Phone number must be exactly 10 digits (numbers only).'); return;
   }
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     err('step1-alert','⚠️ Enter a valid email address.'); return;
@@ -873,7 +874,11 @@ function showSuccess(d){
    HELPERS
 ═══════════════════════════════════════════ */
 function v(id){ return document.getElementById(id).value.trim(); }
-function err(id,html){ document.getElementById(id).innerHTML=`<div class="alert a-err">${html}</div>`; }
+function err(id,html){
+  const el = document.getElementById(id);
+  el.innerHTML=`<div class="alert a-err" style="font-size:14px;font-weight:600;">${html}</div>`;
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+}
 function clearAlert(id){ document.getElementById(id).innerHTML=''; }
 
 function resetAll(){

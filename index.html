@@ -74,26 +74,68 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,.1);}
 .field input::placeholder{color:var(--muted)}
 .field select option{background:var(--s1)}
+.field .hint{font-size:11px;color:var(--muted2);margin-top:5px;}
+.field .hint.err-hint{color:var(--red)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:480px){.g2{grid-template-columns:1fr}}
 
 /* EVENTS */
+.ev-section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.ev-section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* Selection counter pill */
+.sel-counter{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:100px;
+  font-size:12px;font-weight:700;letter-spacing:.5px;
+  background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);
+  color:var(--cyan);margin-bottom:14px;
+}
+.sel-counter.full-sel{background:rgba(255,208,96,.08);border-color:rgba(255,208,96,.3);color:var(--yellow);}
+
 .ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
 @media(max-width:480px){.ev-grid{grid-template-columns:1fr}}
-.ev-card{border:2px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;cursor:pointer;background:var(--s1);transition:border-color .2s,background .2s,box-shadow .2s,transform .15s;position:relative;overflow:hidden;user-select:none;}
-.ev-card:hover:not(.ev-disabled){border-color:var(--border2);transform:translateY(-2px);}
-.ev-card.ev-sel-tech{border-color:var(--cyan);background:rgba(0,229,255,.06);box-shadow:0 0 20px rgba(0,229,255,.15);}
+
+.ev-card{
+  border:2px solid var(--border);border-radius:var(--r-sm);
+  padding:14px 16px;cursor:pointer;background:var(--s1);
+  transition:border-color .2s,background .2s,box-shadow .2s,transform .15s;
+  position:relative;overflow:hidden;user-select:none;
+}
+.ev-card:hover:not(.ev-disabled):not(.ev-full){border-color:var(--border2);transform:translateY(-2px);}
+.ev-card.ev-sel-1{border-color:var(--cyan);background:rgba(0,229,255,.06);box-shadow:0 0 20px rgba(0,229,255,.15);}
+.ev-card.ev-sel-2{border-color:var(--orange);background:rgba(255,107,26,.06);box-shadow:0 0 20px rgba(255,107,26,.12);}
 .ev-card.ev-sel-nontech{border-color:var(--orange);background:rgba(255,107,26,.06);box-shadow:0 0 20px rgba(255,107,26,.12);}
 .ev-card.ev-disabled{opacity:.3;pointer-events:none;cursor:default}
+/* Full event style */
+.ev-card.ev-full{opacity:.45;pointer-events:none;cursor:not-allowed;border-color:var(--red) !important;}
+.ev-card.ev-full::after{
+  content:'FULL';position:absolute;top:8px;right:8px;
+  background:var(--red);color:#fff;
+  font-size:9px;font-weight:800;letter-spacing:1.5px;
+  padding:2px 7px;border-radius:4px;
+}
+
 .ev-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
-.ev-sel-tech .ev-check{display:flex;background:var(--cyan);color:var(--bg)}
+.ev-sel-1 .ev-check{display:flex;background:var(--cyan);color:var(--bg)}
+.ev-sel-2 .ev-check{display:flex;background:var(--orange);color:#fff}
 .ev-sel-nontech .ev-check{display:flex;background:var(--orange);color:#fff}
+
 .ev-name{font-family:var(--font-display);font-size:17px;letter-spacing:.5px;color:#fff;margin-bottom:6px;}
+.ev-meta{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
 .ev-badges{display:flex;gap:6px;flex-wrap:wrap}
 .badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;letter-spacing:.5px;}
 .b-tech{background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.2)}
 .b-nontech{background:rgba(255,107,26,.1);color:var(--orange2);border:1px solid rgba(255,107,26,.2)}
 .b-team{background:rgba(255,208,96,.08);color:var(--yellow);border:1px solid rgba(255,208,96,.2)}
+
+/* Capacity bar */
+.cap-bar-wrap{margin-top:8px;}
+.cap-label{font-size:10px;color:var(--muted2);margin-bottom:4px;display:flex;justify-content:space-between;}
+.cap-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.cap-bar-fill{height:100%;border-radius:2px;background:var(--green);transition:width .4s ease;}
+.cap-bar-fill.warn{background:var(--yellow);}
+.cap-bar-fill.danger{background:var(--red);}
 
 /* TEAM BOX */
 .team-box{margin-top:16px;padding:20px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.15);border-radius:var(--r-sm);display:none;}
@@ -174,7 +216,7 @@ footer span{color:var(--cyan)}
     <div class="rule-chip"><div class="dot"></div>Min. 1 Technical Event</div>
     <div class="rule-chip"><div class="dot"></div>Max. 2 Events Total</div>
     <div class="rule-chip"><div class="dot"></div>Teams Max 2 Members</div>
-    <div class="rule-chip"><div class="dot"></div>One Reg per Register No.</div>
+    <div class="rule-chip"><div class="dot"></div>30 Seats Per Event</div>
   </div>
 </div>
 
@@ -198,7 +240,7 @@ footer span{color:var(--cyan)}
 
 <div class="form-outer">
 
-  <!-- STEP 1 -->
+  <!-- ═══ STEP 1: DETAILS ═══ -->
   <div class="panel active" id="p1">
     <div class="card">
       <div class="card-accent"></div>
@@ -211,7 +253,12 @@ footer span{color:var(--cyan)}
       </div>
       <div id="step1-alert"></div>
       <div class="g2">
-        <div class="field"><label>Register Number *</label><input type="text" id="f-reg" placeholder="e.g. 322823205001" maxlength="15"/></div>
+        <div class="field">
+          <label>Register Number *</label>
+          <!-- ✅ FIX 1: maxlength=12, inputmode=numeric blocks mobile keyboard letters too -->
+          <input type="text" id="f-reg" placeholder="12-digit number" maxlength="12" inputmode="numeric"/>
+          <div class="hint" id="reg-hint">Exactly 12 digits, numbers only</div>
+        </div>
         <div class="field"><label>Full Name *</label><input type="text" id="f-name" placeholder="As per college ID"/></div>
       </div>
       <div class="g2">
@@ -234,7 +281,7 @@ footer span{color:var(--cyan)}
         </div>
       </div>
       <div class="g2">
-        <div class="field"><label>Phone Number *</label><input type="tel" id="f-phone" placeholder="10-digit mobile" maxlength="10"/></div>
+        <div class="field"><label>Phone Number *</label><input type="tel" id="f-phone" placeholder="10-digit mobile" maxlength="10" inputmode="numeric"/></div>
         <div class="field"><label>Email Address *</label><input type="email" id="f-email" placeholder="For your digital pass"/></div>
       </div>
       <div class="alert a-info" style="margin-top:8px">ℹ️ Your digital pass will be emailed after successful registration. Ensure the email is correct.</div>
@@ -245,28 +292,39 @@ footer span{color:var(--cyan)}
     </div>
   </div>
 
-  <!-- STEP 2 -->
+  <!-- ═══ STEP 2: TECHNICAL EVENTS ═══ -->
   <div class="panel" id="p2">
     <div class="card">
       <div class="card-accent"></div>
       <div class="card-head">
         <div class="card-icon">⚙️</div>
         <div class="card-title-block">
-          <div class="ct">TECHNICAL EVENT</div>
-          <div class="cs">Mandatory — select one technical event to participate in</div>
+          <div class="ct">TECHNICAL EVENTS</div>
+          <!-- ✅ FIX 2: Updated subtitle to reflect 1 or 2 tech events -->
+          <div class="cs">Select 1 or 2 technical events (mandatory)</div>
         </div>
       </div>
       <div id="pre-enrolled-notice"></div>
+
+      <!-- ✅ FIX 2: Live selection counter -->
+      <div class="sel-counter" id="tech-counter">0 / 2 selected</div>
+      <div class="alert a-info" style="margin-bottom:14px">
+        ℹ️ You may select up to <strong>2 Technical events</strong>. If you select 2 Technical events, you cannot add a Non-Technical event.
+      </div>
+
       <div class="ev-grid" id="tech-grid"></div>
+
+      <!-- Ideathon team box -->
       <div class="team-box" id="ideathon-box">
         <div class="team-box-title">👥 IDEATHON TEAM DETAILS</div>
-        <div class="alert a-warn">⚠️ As team leader, register for your entire team here. Your team member must NOT submit the form separately.</div>
+        <div class="alert a-warn">⚠️ As team leader, register your entire team here. Your team member must NOT submit the form separately.</div>
         <div class="field"><label>Team Member Full Name *</label><input type="text" id="i-mname" placeholder="Full name of your partner"/></div>
         <div class="g2">
-          <div class="field"><label>Member Register Number *</label><input type="text" id="i-mreg" placeholder="Register number" maxlength="15"/></div>
+          <div class="field"><label>Member Register Number *</label><input type="text" id="i-mreg" placeholder="12-digit number" maxlength="12" inputmode="numeric"/></div>
           <div class="field"><label>Member Email *</label><input type="email" id="i-memail" placeholder="They'll get a notification"/></div>
         </div>
       </div>
+
       <div style="margin-top:20px" class="btn-row">
         <button class="btn btn-secondary" onclick="goTo(1)">← Back</button>
         <button class="btn btn-primary" onclick="goToStep3()">
@@ -277,7 +335,7 @@ footer span{color:var(--cyan)}
     </div>
   </div>
 
-  <!-- STEP 3 -->
+  <!-- ═══ STEP 3: NON-TECHNICAL ═══ -->
   <div class="panel" id="p3">
     <div class="card">
       <div class="card-accent"></div>
@@ -285,20 +343,23 @@ footer span{color:var(--cyan)}
         <div class="card-icon">🎭</div>
         <div class="card-title-block">
           <div class="ct">NON-TECHNICAL EVENT</div>
-          <div class="cs">Optional — add one non-technical event or skip</div>
+          <div class="cs">Optional — only if you selected 1 Technical event</div>
         </div>
       </div>
       <div id="nontech-notice"></div>
       <div class="ev-grid" id="nontech-grid"></div>
+
+      <!-- Rapid Rush team box -->
       <div class="team-box" id="rr-box">
         <div class="team-box-title">👥 RAPID RUSH TEAM DETAILS</div>
-        <div class="alert a-warn">⚠️ As team leader, register for your entire team here. Your team member must NOT submit the form separately.</div>
+        <div class="alert a-warn">⚠️ As team leader, register your entire team here. Your team member must NOT submit the form separately.</div>
         <div class="field"><label>Team Member Full Name *</label><input type="text" id="r-mname" placeholder="Full name of your partner"/></div>
         <div class="g2">
-          <div class="field"><label>Member Register Number *</label><input type="text" id="r-mreg" placeholder="Register number" maxlength="15"/></div>
+          <div class="field"><label>Member Register Number *</label><input type="text" id="r-mreg" placeholder="12-digit number" maxlength="12" inputmode="numeric"/></div>
           <div class="field"><label>Member Email *</label><input type="email" id="r-memail" placeholder="They'll get a notification"/></div>
         </div>
       </div>
+
       <div style="margin-top:20px" class="btn-row">
         <button class="btn btn-secondary" onclick="goTo(2)">← Back</button>
         <button class="btn btn-primary" id="btn-s3" onclick="handleSubmit()">
@@ -307,12 +368,12 @@ footer span{color:var(--cyan)}
         </button>
       </div>
       <button class="btn btn-ghost" style="margin-top:8px" onclick="skipAndSubmit()">
-        Skip — register with Technical event only →
+        Skip — register without a Non-Technical event →
       </button>
     </div>
   </div>
 
-  <!-- STEP 4 SUCCESS -->
+  <!-- ═══ STEP 4: SUCCESS ═══ -->
   <div class="panel" id="p4">
     <div class="card">
       <div class="card-accent"></div>
@@ -348,100 +409,236 @@ footer span{color:var(--cyan)}
     </div>
   </div>
 
-</div>
+</div><!-- /form-outer -->
 
 <footer>
   TECHNOVANZA 2026 &nbsp;·&nbsp; Anjalai Ammal Mahalingam Engineering College
-  &nbsp;·&nbsp; <span>symposium@aamec.edu.in</span>
+  &nbsp;·&nbsp; <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="62111b0f120d110b170f2203030f07014c0706174c0b0c">[email&#160;protected]</a></span>
 </footer>
 
-<script>
-/* ── CONFIG ── */
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ═══════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════ */
 const CFG = {
-  sympName  : "TECHNOVANZA 2026",
-  // ✅ YOUR APPS SCRIPT URL
-  scriptURL : "https://script.google.com/macros/s/AKfycbwMKYsgyvB4jfwdhcRjiNOnBn_gXX-JdZy7Sv4pSjGlWjm766nlQHHxZmRLmFqRzGLLwg/exec",
-  demoMode  : false,
+  sympName     : "TECHNOVANZA 2026",
+  scriptURL    : "https://script.google.com/macros/s/AKfycbwMKYsgyvB4jfwdhcRjiNOnBn_gXX-JdZy7Sv4pSjGlWjm766nlQHHxZmRLmFqRzGLLwg/exec",
+  demoMode     : false,
+  // ✅ TESTING: limit=3 to test. Change to 30 before going live!
+  EVENT_LIMIT  : 3,
+  // ✅ WhatsApp community link — shown after registration
+  whatsappLink : "https://chat.whatsapp.com/HhRTOv148ZU9KobhO0J7El",
 };
 
-/* ── EVENTS ── */
+/* ═══════════════════════════════════════════
+   EVENT DATA
+═══════════════════════════════════════════ */
 const TECH = [
-  {id:"prompt",    label:"Prompt",       team:false},
-  {id:"debugging", label:"Debugging",    team:false},
-  {id:"coding",    label:"Coding",       team:false},
-  {id:"ideathon",  label:"Ideathon",     team:true},
+  {id:"prompt",    label:"Prompt",    team:false},
+  {id:"debugging", label:"Debugging", team:false},
+  {id:"coding",    label:"Coding",    team:false},
+  {id:"ideathon",  label:"Ideathon",  team:true },
 ];
 const NONTECH = [
-  {id:"rapidrush",   label:"Rapid Rush",    team:true},
+  {id:"rapidrush",   label:"Rapid Rush",    team:true },
   {id:"photography", label:"Photography",   team:false},
   {id:"meme",        label:"Meme Creation", team:false},
   {id:"chess",       label:"Chess",         team:false},
 ];
 
-/* ── STATE ── */
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
 let S = blank();
 function blank(){
-  return {step:1,reg:'',name:'',dept:'',year:'',phone:'',email:'',
-    techId:null,nonTechId:null,iTeamMember:null,rrTeamMember:null,
-    isPreEnrolled:false,preEvent:null};
+  return {
+    step:1, reg:'', name:'', dept:'', year:'', phone:'', email:'',
+    techIds:[],        // ✅ Array — supports up to 2 tech events
+    nonTechId:null,
+    iTeamMember:null,
+    rrTeamMember:null,
+    isPreEnrolled:false,
+    preEvent:null,
+  };
 }
 
-/* ── LOCAL DB (frontend duplicate check) ── */
+/* ═══════════════════════════════════════════
+   LOCAL DB — frontend duplicate check + capacity tracking
+═══════════════════════════════════════════ */
 function db(){ return JSON.parse(localStorage.getItem('tv2026')||'[]') }
 function dbSave(r){ const d=db(); d.push(r); localStorage.setItem('tv2026',JSON.stringify(d)) }
+
+// Count how many people are registered for a given event id
+// ✅ FIX 3: Counts both individual + team members
+function eventCount(evId){
+  let count = 0;
+  for(const r of db()){
+    if(r.techIds && r.techIds.includes(evId)) count++;
+    if(r.nonTechId === evId) count++;
+    // Team members also count toward ideathon / rapidrush
+    if(evId==='ideathon'   && r.iTeamMember)  count++;
+    if(evId==='rapidrush'  && r.rrTeamMember) count++;
+  }
+  return count;
+}
+
 function dupCheck(reg){
   for(const r of db()){
-    if(r.reg===reg) return {type:'self',techEvent:r.techLabel};
-    if(r.iTeamMember?.reg===reg) return {type:'team',event:'Ideathon',leader:r.name};
-    if(r.rrTeamMember?.reg===reg) return {type:'team',event:'Rapid Rush',leader:r.name};
+    if(r.reg===reg) return {type:'self', events: r.techIds};
+    if(r.iTeamMember?.reg===reg)  return {type:'team', event:'Ideathon',   leader:r.name};
+    if(r.rrTeamMember?.reg===reg) return {type:'team', event:'Rapid Rush', leader:r.name};
   }
   return null;
 }
 function memberTaken(reg){
   for(const r of db()){
-    if(r.reg===reg||r.iTeamMember?.reg===reg||r.rrTeamMember?.reg===reg) return true;
+    if(r.reg===reg) return true;
+    if(r.iTeamMember?.reg===reg)  return true;
+    if(r.rrTeamMember?.reg===reg) return true;
   }
   return false;
 }
 
-/* ── RENDER ── */
-function renderTechGrid(){
-  document.getElementById('tech-grid').innerHTML=TECH.map(e=>`
-    <div class="ev-card" id="tc-${e.id}" onclick="pickTech('${e.id}')">
-      <div class="ev-check">✓</div>
-      <div class="ev-name">${e.label}</div>
-      <div class="ev-badges">
-        <span class="badge b-tech">Technical</span>
-        ${e.team?'<span class="badge b-team">Team · max 2</span>':''}
-      </div>
-    </div>`).join('');
-}
-function renderNonTechGrid(){
-  document.getElementById('nontech-grid').innerHTML=NONTECH.map(e=>`
-    <div class="ev-card${S.isPreEnrolled?' ev-disabled':''}" id="nt-${e.id}" onclick="pickNonTech('${e.id}')">
-      <div class="ev-check">✓</div>
-      <div class="ev-name">${e.label}</div>
-      <div class="ev-badges">
-        <span class="badge b-nontech">Non-Technical</span>
-        ${e.team?'<span class="badge b-team">Team · max 2</span>':''}
-      </div>
-    </div>`).join('');
-}
-function pickTech(id){
-  S.techId=S.techId===id?null:id;
-  document.querySelectorAll('#tech-grid .ev-card').forEach(c=>c.classList.remove('ev-sel-tech'));
-  if(S.techId) document.getElementById('tc-'+id).classList.add('ev-sel-tech');
-  document.getElementById('ideathon-box').classList.toggle('show',S.techId==='ideathon');
-}
-function pickNonTech(id){
-  if(S.isPreEnrolled) return;
-  S.nonTechId=S.nonTechId===id?null:id;
-  document.querySelectorAll('#nontech-grid .ev-card').forEach(c=>c.classList.remove('ev-sel-nontech'));
-  if(S.nonTechId) document.getElementById('nt-'+id).classList.add('ev-sel-nontech');
-  document.getElementById('rr-box').classList.toggle('show',S.nonTechId==='rapidrush');
+/* ═══════════════════════════════════════════
+   REGISTER NUMBER VALIDATION (only digits, block typing non-digits)
+═══════════════════════════════════════════ */
+function setupRegInput(){
+  const inp = document.getElementById('f-reg');
+  // Strip non-digits on every keyup/paste
+  inp.addEventListener('input', ()=>{
+    const clean = inp.value.replace(/\D/g,'');
+    inp.value = clean;
+    const hint = document.getElementById('reg-hint');
+    if(clean.length === 0){
+      hint.textContent = 'Exactly 12 digits, numbers only';
+      hint.className = 'hint';
+    } else if(clean.length < 12){
+      hint.textContent = `${clean.length} / 12 digits entered`;
+      hint.className = 'hint';
+    } else {
+      hint.textContent = '✓ 12 digits entered';
+      hint.className = 'hint';
+      hint.style.color = 'var(--green)';
+    }
+  });
 }
 
-/* ── NAVIGATION ── */
+/* ═══════════════════════════════════════════
+   CAPACITY BAR RENDERER
+═══════════════════════════════════════════ */
+function capBarHTML(evId){
+  const count = eventCount(evId);
+  const pct   = Math.min((count / CFG.EVENT_LIMIT) * 100, 100);
+  const cls   = pct >= 100 ? 'danger' : pct >= 70 ? 'warn' : '';
+  const label = count >= CFG.EVENT_LIMIT ? 'FULL' : `${count} / ${CFG.EVENT_LIMIT} seats`;
+  return `
+    <div class="cap-bar-wrap">
+      <div class="cap-label"><span>${label}</span></div>
+      <div class="cap-bar"><div class="cap-bar-fill ${cls}" style="width:${pct}%"></div></div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   RENDER TECH GRID
+   ✅ FIX 2: Supports selecting up to 2 tech events
+   ✅ FIX 3: Full events are greyed out
+═══════════════════════════════════════════ */
+function renderTechGrid(){
+  const selCount = S.techIds.length;
+  // Update counter pill
+  const ctr = document.getElementById('tech-counter');
+  ctr.textContent = `${selCount} / 2 selected`;
+  ctr.className   = 'sel-counter' + (selCount===2?' full-sel':'');
+
+  document.getElementById('tech-grid').innerHTML = TECH.map(e=>{
+    const count   = eventCount(e.id);
+    const isFull  = count >= CFG.EVENT_LIMIT;
+    const selIdx  = S.techIds.indexOf(e.id); // -1, 0, or 1
+    const isSel   = selIdx >= 0;
+    // Disable unselected cards once 2 are chosen (unless it's already selected)
+    const isLocked = selCount >= 2 && !isSel;
+    const selClass = isSel ? (selIdx===0 ? 'ev-sel-1' : 'ev-sel-2') : '';
+    const disClass = isFull ? 'ev-full' : isLocked ? 'ev-disabled' : '';
+
+    return `
+      <div class="ev-card ${selClass} ${disClass}" id="tc-${e.id}" onclick="pickTech('${e.id}')">
+        <div class="ev-check">✓</div>
+        <div class="ev-name">${e.label}</div>
+        <div class="ev-meta">
+          <div class="ev-badges">
+            <span class="badge b-tech">Technical</span>
+            ${e.team?'<span class="badge b-team">Team · max 2</span>':''}
+          </div>
+        </div>
+        ${capBarHTML(e.id)}
+      </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   RENDER NON-TECH GRID
+   ✅ FIX 3: Full events greyed out
+═══════════════════════════════════════════ */
+function renderNonTechGrid(){
+  // If 2 tech events selected, non-tech is disabled entirely
+  const blocked = S.isPreEnrolled || S.techIds.length >= 2;
+
+  document.getElementById('nontech-grid').innerHTML = NONTECH.map(e=>{
+    const count   = eventCount(e.id);
+    const isFull  = count >= CFG.EVENT_LIMIT;
+    const isSel   = S.nonTechId === e.id;
+    const disClass = isFull ? 'ev-full' : blocked ? 'ev-disabled' : '';
+    const selClass = isSel ? 'ev-sel-nontech' : '';
+
+    return `
+      <div class="ev-card ${selClass} ${disClass}" id="nt-${e.id}" onclick="pickNonTech('${e.id}')">
+        <div class="ev-check">✓</div>
+        <div class="ev-name">${e.label}</div>
+        <div class="ev-meta">
+          <div class="ev-badges">
+            <span class="badge b-nontech">Non-Technical</span>
+            ${e.team?'<span class="badge b-team">Team · max 2</span>':''}
+          </div>
+        </div>
+        ${capBarHTML(e.id)}
+      </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   EVENT SELECTION HANDLERS
+═══════════════════════════════════════════ */
+function pickTech(id){
+  const idx = S.techIds.indexOf(id);
+  if(idx >= 0){
+    // Deselect
+    S.techIds.splice(idx, 1);
+    // Also clear team member if ideathon deselected
+    if(id==='ideathon') S.iTeamMember = null;
+  } else {
+    // Select — max 2
+    if(S.techIds.length >= 2) return;
+    const count = eventCount(id);
+    if(count >= CFG.EVENT_LIMIT){ alert(`${id} is full (${CFG.EVENT_LIMIT}/${CFG.EVENT_LIMIT} seats taken).`); return; }
+    S.techIds.push(id);
+  }
+  renderTechGrid();
+  // Show ideathon box only if ideathon is selected
+  document.getElementById('ideathon-box').classList.toggle('show', S.techIds.includes('ideathon'));
+}
+
+function pickNonTech(id){
+  if(S.isPreEnrolled || S.techIds.length >= 2) return;
+  const count = eventCount(id);
+  if(count >= CFG.EVENT_LIMIT){ alert(`${id} is full (${CFG.EVENT_LIMIT}/${CFG.EVENT_LIMIT} seats taken).`); return; }
+  S.nonTechId = S.nonTechId===id ? null : id;
+  renderNonTechGrid();
+  document.getElementById('rr-box').classList.toggle('show', S.nonTechId==='rapidrush');
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
 function goTo(n){
   S.step=n;
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -462,148 +659,240 @@ function updateStepper(n){
   }
 }
 
-/* ── STEP 1 → 2 ── */
+/* ═══════════════════════════════════════════
+   STEP 1 → 2
+   ✅ FIX 1: Register number must be exactly 12 digits, only numbers
+═══════════════════════════════════════════ */
 function goToStep2(){
-  const reg=v('f-reg'),name=v('f-name'),dept=v('f-dept'),
-        year=v('f-year'),phone=v('f-phone'),email=v('f-email');
+  const reg  = v('f-reg');
+  const name = v('f-name');
+  const dept = v('f-dept');
+  const year = v('f-year');
+  const phone= v('f-phone');
+  const email= v('f-email');
+
   if(!reg||!name||!dept||!year||!phone||!email){
     err('step1-alert','⚠️ Please fill in all fields before continuing.'); return;
   }
-  if(!/^\d{10}$/.test(phone)){err('step1-alert','⚠️ Phone number must be exactly 10 digits.'); return;}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err('step1-alert','⚠️ Enter a valid email address.'); return;}
+  // ✅ FIX 1: Exactly 12 digits only
+  if(!/^\d{12}$/.test(reg)){
+    err('step1-alert','⚠️ Register Number must be exactly <strong>12 digits</strong> — numbers only, no letters or special characters.'); return;
+  }
+  if(!/^\d{10}$/.test(phone)){
+    err('step1-alert','⚠️ Phone number must be exactly 10 digits.'); return;
+  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    err('step1-alert','⚠️ Enter a valid email address.'); return;
+  }
 
-  const dup=dupCheck(reg);
+  const dup = dupCheck(reg);
   if(dup){
     if(dup.type==='self'){
-      err('step1-alert',`❌ <strong>${reg}</strong> is already registered for <strong>${dup.techEvent}</strong>.`);
+      err('step1-alert',`❌ Register number <strong>${reg}</strong> is already registered. Duplicate registrations are not allowed.`);
       return;
     }
-    S.isPreEnrolled=true; S.preEvent=dup.event;
+    if(dup.type==='team'){ S.isPreEnrolled=true; S.preEvent=dup.event; }
   } else { S.isPreEnrolled=false; S.preEvent=null; }
 
-  S.reg=reg;S.name=name;S.dept=dept;S.year=year;S.phone=phone;S.email=email;
+  S.reg=reg; S.name=name; S.dept=dept; S.year=year; S.phone=phone; S.email=email;
   clearAlert('step1-alert');
-  document.getElementById('pre-enrolled-notice').innerHTML=S.isPreEnrolled
-    ?`<div class="alert a-warn">⚠️ You're already enrolled in <strong>${S.preEvent}</strong> as team member. Only one additional Technical event is allowed.</div>`:''
+
+  document.getElementById('pre-enrolled-notice').innerHTML = S.isPreEnrolled
+    ? `<div class="alert a-warn">⚠️ You're already enrolled in <strong>${S.preEvent}</strong> as a team member. Only one additional Technical event is allowed. Non-Technical events are blocked.</div>`
+    : '';
+
+  S.techIds = []; // reset on entry
   renderTechGrid();
   goTo(2);
 }
 
-/* ── STEP 2 → 3 ── */
+/* ═══════════════════════════════════════════
+   STEP 2 → 3
+   ✅ FIX 2: At least 1 tech required; if 2 tech selected, skip non-tech
+═══════════════════════════════════════════ */
 function goToStep3(){
-  if(!S.techId){alert('Please select a Technical Event to continue.');return;}
-  if(S.techId==='ideathon'){
-    const mn=v('i-mname'),mr=v('i-mreg'),me=v('i-memail');
-    if(!mn||!mr||!me){alert('Please fill in all Ideathon team member details.');return;}
-    if(mr===S.reg){alert('Team member register number cannot be the same as yours.');return;}
-    if(memberTaken(mr)){alert(`Register number ${mr} is already registered or in another team.`);return;}
+  if(S.techIds.length === 0){
+    alert('Please select at least one Technical Event to continue.'); return;
+  }
+
+  // Validate Ideathon team member if selected
+  if(S.techIds.includes('ideathon')){
+    const mn=v('i-mname'), mr=v('i-mreg'), me=v('i-memail');
+    if(!mn||!mr||!me){ alert('Please fill in all Ideathon team member details.'); return; }
+    if(!/^\d{12}$/.test(mr)){ alert('Team member register number must be exactly 12 digits.'); return; }
+    if(mr===S.reg){ alert('Team member register number cannot be the same as yours.'); return; }
+    if(memberTaken(mr)){ alert(`Register number ${mr} is already registered or in another team.`); return; }
     S.iTeamMember={name:mn,reg:mr,email:me};
   } else { S.iTeamMember=null; }
 
-  document.getElementById('nontech-notice').innerHTML=S.isPreEnrolled
-    ?`<div class="alert a-warn">⚠️ Pre-enrolled members cannot add a Non-Technical event.</div>`
-    :`<div class="alert a-info">ℹ️ Optional — add one Non-Technical event or skip below.</div>`;
+  // ✅ FIX 2: If 2 tech events selected → skip straight to submit (no non-tech allowed)
+  if(S.techIds.length >= 2){
+    S.nonTechId = null;
+    S.rrTeamMember = null;
+    doSubmit();
+    return;
+  }
+
+  // 1 tech event — show non-tech step
+  document.getElementById('nontech-notice').innerHTML = S.isPreEnrolled
+    ? `<div class="alert a-warn">⚠️ Pre-enrolled members cannot add a Non-Technical event.</div>`
+    : `<div class="alert a-info">ℹ️ Optional — add one Non-Technical event, or skip below to register with your Technical event only.</div>`;
+
+  S.nonTechId = null; // reset
   renderNonTechGrid();
   goTo(3);
 }
 
-/* ── SUBMIT ── */
+/* ═══════════════════════════════════════════
+   SUBMIT
+═══════════════════════════════════════════ */
 async function handleSubmit(){
   if(S.nonTechId==='rapidrush'){
-    const mn=v('r-mname'),mr=v('r-mreg'),me=v('r-memail');
-    if(!mn||!mr||!me){alert('Please fill in all Rapid Rush team member details.');return;}
-    if(mr===S.reg){alert('Team member cannot be the same person as you.');return;}
-    if(memberTaken(mr)){alert(`Register number ${mr} is already registered or in another team.`);return;}
+    const mn=v('r-mname'), mr=v('r-mreg'), me=v('r-memail');
+    if(!mn||!mr||!me){ alert('Please fill in all Rapid Rush team member details.'); return; }
+    if(!/^\d{12}$/.test(mr)){ alert('Team member register number must be exactly 12 digits.'); return; }
+    if(mr===S.reg){ alert('Team member cannot be the same person as you.'); return; }
+    if(memberTaken(mr)){ alert(`Register number ${mr} is already registered or in another team.`); return; }
     S.rrTeamMember={name:mn,reg:mr,email:me};
   } else { S.rrTeamMember=null; }
   await doSubmit();
 }
-function skipAndSubmit(){S.nonTechId=null;S.rrTeamMember=null;doSubmit();}
+
+function skipAndSubmit(){ S.nonTechId=null; S.rrTeamMember=null; doSubmit(); }
 
 async function doSubmit(){
-  const btn=document.getElementById('btn-s3');
-  btn.classList.add('is-loading');btn.disabled=true;
+  const btn = document.getElementById('btn-s3');
+  if(btn){ btn.classList.add('is-loading'); btn.disabled=true; }
 
-  const techLabel=TECH.find(e=>e.id===S.techId)?.label||'';
-  const nonTechLabel=NONTECH.find(e=>e.id===S.nonTechId)?.label||'';
+  const techLabels   = S.techIds.map(id => TECH.find(e=>e.id===id)?.label||'');
+  const nonTechLabel = NONTECH.find(e=>e.id===S.nonTechId)?.label||'';
+
   const payload={
-    timestamp:new Date().toISOString(),
-    reg:S.reg,name:S.name,dept:S.dept,year:S.year,
-    phone:S.phone,email:S.email,
-    techId:S.techId,techLabel,
-    nonTechId:S.nonTechId,nonTechLabel,
-    iTeamMember:S.iTeamMember,
-    rrTeamMember:S.rrTeamMember,
-    isPreEnrolled:S.isPreEnrolled,
-    preEvent:S.preEvent,
+    timestamp    : new Date().toISOString(),
+    reg          : S.reg,
+    name         : S.name,
+    dept         : S.dept,
+    year         : S.year,
+    phone        : S.phone,
+    email        : S.email,
+    techIds      : S.techIds,
+    techLabels,                 // array e.g. ["Coding","Ideathon"]
+    nonTechId    : S.nonTechId,
+    nonTechLabel,
+    iTeamMember  : S.iTeamMember,
+    rrTeamMember : S.rrTeamMember,
+    isPreEnrolled: S.isPreEnrolled,
+    preEvent     : S.preEvent,
   };
 
   try {
-    // ✅ CORS FIX: mode:'no-cors' prevents browser blocking.
-    // We can't read the response body in no-cors mode — that's fine.
-    // Apps Script still receives the data and handles everything.
+    // CORS fix: no-cors bypasses browser block for Google Apps Script
     await fetch(CFG.scriptURL,{
-      method:'POST',
-      mode:'no-cors',
+      method :'POST',
+      mode   :'no-cors',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify(payload),
+      body   :JSON.stringify(payload),
     });
-    // Save locally so frontend duplicate check works
-    dbSave(payload);
+    dbSave(payload); // save locally for frontend duplicate + capacity check
     showSuccess(payload);
   } catch(e){
-    btn.classList.remove('is-loading');btn.disabled=false;
+    if(btn){ btn.classList.remove('is-loading'); btn.disabled=false; }
     alert('Network error — check your connection and try again.\n'+e.message);
   }
 }
 
-/* ── SUCCESS SCREEN ── */
+/* ═══════════════════════════════════════════
+   SUCCESS SCREEN
+═══════════════════════════════════════════ */
 function showSuccess(d){
   goTo(4);
-  document.getElementById('dp-id').textContent   ='REG/'+d.reg;
-  document.getElementById('dp-name').textContent  =d.name;
-  document.getElementById('dp-reg').textContent   =d.reg;
-  document.getElementById('dp-dept').textContent  =d.dept+' · '+d.year;
-  document.getElementById('dp-phone').textContent =d.phone;
+  document.getElementById('dp-id').textContent   = 'REG/'+d.reg;
+  document.getElementById('dp-name').textContent  = d.name;
+  document.getElementById('dp-reg').textContent   = d.reg;
+  document.getElementById('dp-dept').textContent  = d.dept+' · '+d.year;
+  document.getElementById('dp-phone').textContent = d.phone;
 
   const chips=[];
-  if(d.isPreEnrolled&&d.preEvent) chips.push(`<span class="dpass-chip dc-pre">${d.preEvent} — Pre-enrolled Team Member</span>`);
-  if(d.techLabel) chips.push(`<span class="dpass-chip dc-tech">${d.techLabel}${d.iTeamMember?' — Team Leader':''}</span>`);
-  if(d.nonTechLabel) chips.push(`<span class="dpass-chip dc-nontech">${d.nonTechLabel}${d.rrTeamMember?' — Team Leader':''}</span>`);
+  if(d.isPreEnrolled&&d.preEvent)
+    chips.push(`<span class="dpass-chip dc-pre">${d.preEvent} — Pre-enrolled Team Member</span>`);
+  d.techLabels.forEach((lbl,i)=>{
+    const isIdeathon = d.techIds[i]==='ideathon';
+    chips.push(`<span class="dpass-chip dc-tech">${lbl}${isIdeathon&&d.iTeamMember?' — Team Leader':''}</span>`);
+  });
+  if(d.nonTechLabel)
+    chips.push(`<span class="dpass-chip dc-nontech">${d.nonTechLabel}${d.rrTeamMember?' — Team Leader':''}</span>`);
   document.getElementById('dp-events').innerHTML=chips.join('');
 
   let t='';
-  if(d.iTeamMember) t+=`<div class="dpass-team"><div class="dpass-team-title">Ideathon Team Member</div><div class="dpass-row"><span class="dpass-k">Name</span><span class="dpass-v">${d.iTeamMember.name}</span></div><div class="dpass-row"><span class="dpass-k">Reg. No.</span><span class="dpass-v">${d.iTeamMember.reg}</span></div></div>`;
+  if(d.iTeamMember)  t+=`<div class="dpass-team"><div class="dpass-team-title">Ideathon Team Member</div><div class="dpass-row"><span class="dpass-k">Name</span><span class="dpass-v">${d.iTeamMember.name}</span></div><div class="dpass-row"><span class="dpass-k">Reg. No.</span><span class="dpass-v">${d.iTeamMember.reg}</span></div></div>`;
   if(d.rrTeamMember) t+=`<div class="dpass-team" style="margin-top:10px"><div class="dpass-team-title">Rapid Rush Team Member</div><div class="dpass-row"><span class="dpass-k">Name</span><span class="dpass-v">${d.rrTeamMember.name}</span></div><div class="dpass-row"><span class="dpass-k">Reg. No.</span><span class="dpass-v">${d.rrTeamMember.reg}</span></div></div>`;
   document.getElementById('dp-team').innerHTML=t;
 
   let c=`<div class="alert a-ok" style="text-align:left;margin:0 0 16px">✅ Digital pass emailed to <strong>${d.email}</strong>`;
-  if(d.iTeamMember) c+=`<br>📧 Notification sent to <strong>${d.iTeamMember.name}</strong>`;
+  if(d.iTeamMember)  c+=`<br>📧 Notification sent to <strong>${d.iTeamMember.name}</strong>`;
   if(d.rrTeamMember) c+=`<br>📧 Notification sent to <strong>${d.rrTeamMember.name}</strong>`;
   c+='</div>';
-  document.getElementById('email-confirms').innerHTML=c;
+
+  // WhatsApp community join banner
+  c += `<a href="${CFG.whatsappLink}" target="_blank" rel="noopener"
+    style="display:flex;align-items:center;gap:14px;
+           background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.3);
+           border-radius:12px;padding:16px 20px;text-decoration:none;
+           margin-bottom:16px;">
+    <div style="width:48px;height:48px;border-radius:50%;background:#25d366;
+                display:flex;align-items:center;justify-content:center;
+                font-size:24px;flex-shrink:0;">💬</div>
+    <div style="text-align:left;">
+      <div style="color:#25d366;font-weight:700;font-size:14px;">
+        Join TECHNOVANZA 2026 WhatsApp Community
+      </div>
+      <div style="color:#7080a8;font-size:12px;margin-top:3px;">
+        Get schedule, updates &amp; announcements — tap to join →
+      </div>
+    </div>
+  </a>`;
+
+  document.getElementById('email-confirms').innerHTML = c;
+
+  // WhatsApp link inside the digital pass card
+  const dpTeam = document.getElementById('dp-team');
+  dpTeam.innerHTML += `
+    <div style="margin-top:16px;padding:14px;
+                background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.2);
+                border-radius:8px;text-align:center;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;
+                  color:#25d366;font-weight:700;margin-bottom:8px;">📢 Stay Updated</div>
+      <a href="${CFG.whatsappLink}" target="_blank" rel="noopener"
+         style="color:#25d366;font-size:13px;font-weight:600;text-decoration:underline;">
+        Join our WhatsApp Community →
+      </a>
+    </div>`;
 }
 
-/* ── HELPERS ── */
+/* ═══════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════ */
 function v(id){ return document.getElementById(id).value.trim(); }
 function err(id,html){ document.getElementById(id).innerHTML=`<div class="alert a-err">${html}</div>`; }
 function clearAlert(id){ document.getElementById(id).innerHTML=''; }
+
 function resetAll(){
   S=blank();
-  ['f-reg','f-name','f-phone','f-email','i-mname','i-mreg','i-memail','r-mname','r-mreg','r-memail']
-    .forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f-reg','f-name','f-phone','f-email',
+   'i-mname','i-mreg','i-memail',
+   'r-mname','r-mreg','r-memail'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
   document.getElementById('f-dept').value='';
   document.getElementById('f-year').value='';
   clearAlert('step1-alert');
   document.getElementById('ideathon-box').classList.remove('show');
   document.getElementById('rr-box').classList.remove('show');
-  renderTechGrid();renderNonTechGrid();
+  const hint = document.getElementById('reg-hint');
+  if(hint){ hint.textContent='Exactly 12 digits, numbers only'; hint.style.color=''; hint.className='hint'; }
+  renderTechGrid();
+  renderNonTechGrid();
   goTo(1);
 }
 
-/* ── INIT ── */
-renderTechGrid();
-renderNonTechGrid();
-</script>
-</body>
-</html>
+/* ════════════════════════════════════════
